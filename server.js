@@ -57,8 +57,7 @@ function sendMetaConversionEvent(eventName, lead) {
           corretor:        lead.corretor || '',
           origem:          lead.origem || ''
         }
-      }],
-      test_event_code: 'TEST12345'  // ← Ativo: aparece no painel "Eventos de Teste" da Meta
+      }]
     });
 
     const options = {
