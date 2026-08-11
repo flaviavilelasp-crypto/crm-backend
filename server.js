@@ -257,11 +257,24 @@ app.delete('/api/leads/:id', (req, res) => {
   const before = serverLeads.length;
   serverLeads = serverLeads.filter(l => l.id !== id);
   if (serverLeads.length < before) {
+    saveBackupToDisk();
     console.log(`🗑️ Lead ${id} excluído do servidor.`);
     res.json({ success: true, message: 'Lead excluído.' });
   } else {
     res.status(404).json({ success: false, message: 'Lead não encontrado.' });
   }
+});
+
+// ── SINCRONIZAR LEADS DO CRM (Frontend → Servidor) ─────────────────────────
+app.post('/api/leads/sync', (req, res) => {
+  const incoming = req.body;
+  if (!Array.isArray(incoming)) {
+    return res.status(400).json({ success: false, error: 'Payload inválido.' });
+  }
+  serverLeads = incoming;
+  saveBackupToDisk();
+  console.log(`🔄 Leads sincronizados: ${serverLeads.length} leads salvos.`);
+  res.json({ success: true, count: serverLeads.length });
 });
 
 // ── INTEGRAÇÃO GOOGLE SHEETS (POLLING DE PLANILHA) ────────────────────────
